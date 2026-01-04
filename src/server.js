@@ -269,26 +269,17 @@ app.get("/cases/:id/tasks", async (req, res, next) => {
       {
         title: { text: "Add person details" },
         href: `/cases/${c.id}/person`,
-        status: taskStatus({ complete: personComplete, started: personStarted }),
-        hint: { text: "Name, NHS number and date of birth" }
+        status: taskStatus({ complete: personComplete, started: personStarted })
       },
       {
         title: { text: "Add clinical details" },
         href: `/cases/${c.id}/clinical`,
-        status: taskStatus({ complete: clinicalComplete, started: clinicalStarted }),
-        hint: { text: "Symptoms start date" }
+        status: taskStatus({ complete: clinicalComplete, started: clinicalStarted })
       },
       {
         title: { text: "Add location details" },
         href: `/cases/${c.id}/location`,
-        status: taskStatus({ complete: locationComplete, started: locationStarted }),
-        hint: { text: "Postcode and organisation" }
-      },
-      {
-        title: { text: "Check answers before submitting" },
-        href: `/cases/${c.id}/check-answers`,
-        status: taskStatus({ complete: false, started: allComplete }),
-        hint: { text: "Review the information before you submit" }
+        status: taskStatus({ complete: locationComplete, started: locationStarted })
       }
     ];
 

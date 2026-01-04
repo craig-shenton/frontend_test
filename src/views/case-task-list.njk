@@ -10,7 +10,10 @@
 
   <h1 class="govuk-heading-l">Continue case</h1>
 
-  {{ govukTaskList({ items: items, idPrefix: "case-" + c.id }) }}
+  {{ govukTaskList({
+    items: items,
+    idPrefix: "case-" + c.id
+  }) }}
 
   {% if allComplete %}
     {{ govukInsetText({
@@ -23,9 +26,10 @@
     }) }}
   {% endif %}
 
-  {{ govukBackLink({
-    text: "Back",
-    href: "/cases/" + c.id,
-    classes: "govuk-!-margin-top-6"
-  }) }}
+  <div class="govuk-!-margin-top-6">
+    {{ govukBackLink({
+      text: "Back",
+      href: "/cases/" + c.id
+    }) }}
+  </div>
 {% endblock %}

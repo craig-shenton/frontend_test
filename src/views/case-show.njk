@@ -32,26 +32,6 @@
     </div>
   </div>
 
-  {# Action buttons (primary + secondary) #}
-  <div class="govuk-button-group">
-    {% if c.state == "DRAFT" or c.state == "RETURNED" %}
-      {{ govukButton({
-        text: "Continue case",
-        href: "/cases/" + c.id + "/tasks"
-      }) }}
-    {% elif c.state == "IN_REVIEW" %}
-      {{ govukButton({
-        text: "Review case",
-        href: "/cases/" + c.id + "/review"
-      }) }}
-    {% endif %}
-
-    {{ govukButton({
-      text: "View timeline",
-      href: "/cases/" + c.id + "/timeline",
-      classes: "govuk-button--secondary"
-    }) }}
-  </div>
 
   {% set dobDisplay = "Not provided" %}
   {% if c.dob_day and c.dob_month and c.dob_year %}
