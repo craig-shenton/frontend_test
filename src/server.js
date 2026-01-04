@@ -484,6 +484,27 @@ app.get("/cases/:id/check-answers", async (req, res, next) => {
   }
 });
 
+// Review (for reviewers)
+app.get("/cases/:id/review", async (req, res, next) => {
+  try {
+    const c = await getCaseById(req.params.id);
+    if (!c) return res.status(404).send("Not found");
+    return res.render("case-review.njk", { title: "Review case", c });
+  } catch (e) {
+    return next(e);
+  }
+});
+
+app.post("/cases/:id/review", async (req, res, next) => {
+  try {
+    const c = await getCaseById(req.params.id);
+    if (!c) return res.status(404).send("Not found");
+    return res.render("case-review.njk", { title: "Review case", c });
+  } catch (e) {
+    return next(e);
+  }
+});
+
 // Submit confirmation page
 app.get("/cases/:id/submit", async (req, res, next) => {
   try {
@@ -516,6 +537,94 @@ app.get("/cases/:id/submitted", async (req, res, next) => {
     const c = await getCaseById(req.params.id);
     if (!c) return res.status(404).send("Not found");
     return res.render("case-submitted.njk", { title: "Case submitted", c });
+  } catch (e) {
+    return next(e);
+  }
+});
+
+// Approve confirmation page
+app.get("/cases/:id/approve", async (req, res, next) => {
+  try {
+    const c = await getCaseById(req.params.id);
+    if (!c) return res.status(404).send("Not found");
+    return res.render("case-approve-confirm.njk", { title: "Approve case", c });
+  } catch (e) {
+    return next(e);
+  }
+});
+
+// Approve action
+app.post("/cases/:id/approve", async (req, res, next) => {
+  try {
+    const updated = await transitionCase({
+      id: req.params.id,
+      eventType: "REVIEW_APPROVE",
+      actorId: "local-user"
+    });
+    if (!updated) return res.status(404).send("Not found");
+    return res.redirect(`/cases/${req.params.id}/approved`);
+  } catch (e) {
+    return next(e);
+  }
+});
+
+// Approved confirmation page
+app.get("/cases/:id/approved", async (req, res, next) => {
+  try {
+    const c = await getCaseById(req.params.id);
+    if (!c) return res.status(404).send("Not found");
+    return res.render("case-approved.njk", { title: "Case approved", c });
+  } catch (e) {
+    return next(e);
+  }
+});
+
+// Return form
+app.get("/cases/:id/return", async (req, res, next) => {
+  try {
+    const c = await getCaseById(req.params.id);
+    if (!c) return res.status(404).send("Not found");
+    return res.render("case-return.njk", { title: "Return case", c });
+  } catch (e) {
+    return next(e);
+  }
+});
+
+// Return action
+app.post("/cases/:id/return", async (req, res, next) => {
+  try {
+    const comment = (req.body.comment || "").trim();
+    const c = await getCaseById(req.params.id);
+    if (!c) return res.status(404).send("Not found");
+
+    if (!comment) {
+      return res.status(400).render("case-return.njk", {
+        title: "Return case",
+        c,
+        error: "Enter a reason for return",
+        form: { comment }
+      });
+    }
+
+    const updated = await transitionCase({
+      id: req.params.id,
+      eventType: "REVIEW_RETURN",
+      comment,
+      actorId: "local-user"
+    });
+    if (!updated) return res.status(404).send("Not found");
+    return res.redirect(`/cases/${req.params.id}/returned`);
+  } catch (e) {
+    return next(e);
+  }
+});
+
+// Returned confirmation page
+app.get("/cases/:id/returned", async (req, res, next) => {
+  try {
+    const c = await getCaseById(req.params.id);
+    if (!c) return res.status(404).send("Not found");
+    return res.render("case-returned.njk", { title: "Case returned", c });
   } catch (e) {
     return next(e);
   }
