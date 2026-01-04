@@ -6,8 +6,6 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
-  {{ govukBackLink({ text: "Back", href: "/cases/" + c.id }) }}
-
   {% include "partials/breadcrumbs-case.njk" %}
 
   <h1 class="govuk-heading-l">Continue case</h1>
@@ -24,4 +22,10 @@
       href: "/cases/" + c.id + "/check-answers"
     }) }}
   {% endif %}
+
+  {{ govukBackLink({
+    text: "Back",
+    href: "/cases/" + c.id,
+    classes: "govuk-!-margin-top-6"
+  }) }}
 {% endblock %}
