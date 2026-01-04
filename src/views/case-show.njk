@@ -32,7 +32,26 @@
     </div>
   </div>
 
-<h2 class="govuk-heading-m">Case details</h2>
+  {# Action buttons (primary + secondary) #}
+  <div class="govuk-button-group">
+    {% if c.state == "DRAFT" or c.state == "RETURNED" %}
+      {{ govukButton({
+        text: "Continue case",
+        href: "/cases/" + c.id + "/tasks"
+      }) }}
+    {% elif c.state == "IN_REVIEW" %}
+      {{ govukButton({
+        text: "Review case",
+        href: "/cases/" + c.id + "/review"
+      }) }}
+    {% endif %}
+
+    {{ govukButton({
+      text: "View timeline",
+      href: "/cases/" + c.id + "/timeline",
+      classes: "govuk-button--secondary"
+    }) }}
+  </div>
 
 {# Summary list (acts like a “check answers” style view for the case hub) #}
 {{ govukSummaryList({
@@ -67,15 +86,15 @@
         key: { text: "Created" },
         value: { text: (c.created_at | formatDateTime) }
       },
-      {
-        key: { text: "Updated" },
-        value: { text: (c.updated_at | formatDateTime) }
-      },
-      {
-        key: { text: "Full name" },
-        value: { text: c.person_name or "Not provided" },
-        actions: {
-          items: [{ href: "/cases/" + c.id + "/person", text: "Change", visuallyHiddenText: "full name" }]
+    {
+      key: { text: "Updated" },
+      value: { text: (c.updated_at | formatDateTime) }
+    },
+    {
+      key: { text: "Full name" },
+      value: { text: c.person_name or "Not provided" },
+      actions: {
+        items: [{ href: "/cases/" + c.id + "/person", text: "Change", visuallyHiddenText: "full name" }]
       }
     },
     {
