@@ -1,0 +1,40 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block content %}
+  {{ govukBackLink({ text: "Back", href: "/cases/" + c.id }) }}
+
+  {% include "partials/breadcrumbs-case.njk" %}
+
+  <h1 class="govuk-heading-l">Timeline</h1>
+
+  {% if events and events.length %}
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header">When</th>
+          <th class="govuk-table__header">Event</th>
+          <th class="govuk-table__header">From</th>
+          <th class="govuk-table__header">To</th>
+          <th class="govuk-table__header">Comment</th>
+          <th class="govuk-table__header">Actor</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for e in events %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ e.occurred_at | formatDateTime }}</td>
+            <td class="govuk-table__cell">{{ e.event_type }}</td>
+            <td class="govuk-table__cell">{{ e.from_state or "" }}</td>
+            <td class="govuk-table__cell">{{ e.to_state or "" }}</td>
+            <td class="govuk-table__cell">{{ e.comment or "" }}</td>
+            <td class="govuk-table__cell">{{ e.actor_id }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="govuk-body">No events.</p>
+  {% endif %}
+{% endblock %}

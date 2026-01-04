@@ -1,0 +1,9 @@
+{# src/views/partials/breadcrumbs-case.njk #}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
+{{ govukBreadcrumbs({
+  items: [
+    { text: "Cases", href: "/" },
+    { text: c.title or "Case", href: "/cases/" + c.id }
+  ]
+}) }}

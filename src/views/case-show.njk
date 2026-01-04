@@ -1,0 +1,132 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block content %}
+
+  {% include "partials/breadcrumbs-case.njk" %}
+
+  {# Status tag #}
+  {% if c.state == "DRAFT" %}
+    {% set stateTag = govukTag({ text: "Draft" }) %}
+  {% elif c.state == "IN_REVIEW" %}
+    {% set stateTag = govukTag({ text: "In review" }) %}
+  {% elif c.state == "RETURNED" %}
+    {% set stateTag = govukTag({ text: "Returned" }) %}
+  {% elif c.state == "APPROVED" %}
+    {% set stateTag = govukTag({ text: "Approved" }) %}
+  {% else %}
+    {% set stateTag = govukTag({ text: c.state }) %}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-l">Case</span>
+      <h1 class="govuk-heading-l">{{ c.title }}</h1>
+    </div>
+
+    <div class="govuk-grid-column-one-third" style="text-align:right;">
+      {{ stateTag | safe }}
+    </div>
+  </div>
+
+  {# Action buttons (primary + secondary) #}
+  <div class="govuk-button-group">
+    {% if c.state == "DRAFT" or c.state == "RETURNED" %}
+      {{ govukButton({
+        text: "Continue case",
+        href: "/cases/" + c.id + "/tasks"
+      }) }}
+    {% elif c.state == "IN_REVIEW" %}
+      {{ govukButton({
+        text: "Review case",
+        href: "/cases/" + c.id + "/check-answers"
+      }) }}
+    {% endif %}
+
+    {{ govukButton({
+      text: "View timeline",
+      href: "/cases/" + c.id + "/timeline",
+      classes: "govuk-button--secondary"
+    }) }}
+  </div>
+
+  <h2 class="govuk-heading-m">Case details</h2>
+
+  {# Summary list (acts like a “check answers” style view for the case hub) #}
+  {{ govukSummaryList({
+    rows: [
+      {
+        key: { text: "Title" },
+        value: { text: c.title },
+        actions: {
+          items: [
+            {
+              href: "/cases/" + c.id + "/edit",
+              text: "Change",
+              visuallyHiddenText: "title"
+            }
+          ]
+        }
+      },
+      {
+        key: { text: "Description" },
+        value: { text: c.description or "Not provided" },
+        actions: {
+          items: [
+            {
+              href: "/cases/" + c.id + "/edit",
+              text: "Change",
+              visuallyHiddenText: "description"
+            }
+          ]
+        }
+      },
+      {
+        key: { text: "Created" },
+        value: { text: (c.created_at | formatDateTime) }
+      },
+      {
+        key: { text: "Updated" },
+        value: { text: (c.updated_at | formatDateTime) }
+      }
+    ]
+  }) }}
+
+  <h2 class="govuk-heading-m">Actions</h2>
+
+  {% if c.state == "DRAFT" or c.state == "RETURNED" %}
+    <p class="govuk-body">
+      When you are ready, submit the case for review.
+    </p>
+
+    {{ govukButton({
+      text: "Submit for review",
+      href: "/cases/" + c.id + "/submit",
+      classes: "govuk-button--secondary"
+    }) }}
+  {% endif %}
+
+  {% if c.state == "IN_REVIEW" %}
+    <p class="govuk-body">
+      You can approve the case or return it to the drafter with a reason.
+    </p>
+
+    {{ govukButton({
+      text: "Approve",
+      href: "/cases/" + c.id + "/approve",
+      classes: "govuk-button--secondary"
+    }) }}
+
+    <p class="govuk-body">
+      <a class="govuk-link" href="/cases/{{ c.id }}/return">Return to drafter</a>
+    </p>
+  {% endif %}
+
+  <p class="govuk-body">
+    <a class="govuk-link" href="/">Back to cases</a>
+  </p>
+
+{% endblock %}

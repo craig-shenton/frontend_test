@@ -1,0 +1,85 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  {{ govukBackLink({ text: "Back", href: "/cases/" + c.id + "/tasks" }) }}
+
+  {% include "partials/breadcrumbs-case.njk" %}
+
+  <h1 class="govuk-heading-l">Check your answers before submitting</h1>
+
+  <h2 class="govuk-heading-m">Person details</h2>
+  {{ govukSummaryList({
+    rows: [
+      {
+        key: { text: "Full name" },
+        value: { text: c.person_name or "Not provided" },
+        actions: { items: [{ href: "/cases/" + c.id + "/person", text: "Change", visuallyHiddenText: "full name" }] }
+      },
+      {
+        key: { text: "NHS number" },
+        value: { text: c.nhs_number or "Not provided" },
+        actions: { items: [{ href: "/cases/" + c.id + "/person", text: "Change", visuallyHiddenText: "NHS number" }] }
+      },
+      {
+        key: { text: "Date of birth" },
+        value: {
+          text: (c.dob_day and c.dob_month and c.dob_year)
+            ? (c | formatPersonDob)
+            : "Not provided"
+        },
+        actions: { items: [{ href: "/cases/" + c.id + "/person", text: "Change", visuallyHiddenText: "date of birth" }] }
+      }
+    ]
+  }) }}
+
+  <h2 class="govuk-heading-m">Clinical details</h2>
+  {{ govukSummaryList({
+    rows: [
+      {
+        key: { text: "Symptoms start date" },
+        value: {
+          text: (c.symptoms_day and c.symptoms_month and c.symptoms_year)
+            ? (c | formatSymptomsDate)
+            : "Not provided"
+        },
+        actions: { items: [{ href: "/cases/" + c.id + "/clinical", text: "Change", visuallyHiddenText: "symptoms start date" }] }
+      }
+    ]
+  }) }}
+
+  <h2 class="govuk-heading-m">Location details</h2>
+  {{ govukSummaryList({
+    rows: [
+      {
+        key: { text: "Postcode" },
+        value: { text: c.postcode or "Not provided" },
+        actions: { items: [{ href: "/cases/" + c.id + "/location", text: "Change", visuallyHiddenText: "postcode" }] }
+      },
+      {
+        key: { text: "Organisation" },
+        value: { text: c.organisation or "Not provided" },
+        actions: { items: [{ href: "/cases/" + c.id + "/location", text: "Change", visuallyHiddenText: "organisation" }] }
+      }
+    ]
+  }) }}
+
+  <h2 class="govuk-heading-m">Submit</h2>
+  <p class="govuk-body">By submitting, you confirm that the information you have given is correct to the best of your knowledge.</p>
+
+  <div class="govuk-button-group">
+    {{ govukButton({
+      text: "Submit case for review",
+      href: "/cases/" + c.id + "/submit"
+    }) }}
+
+    {{ govukButton({
+      text: "Return to task list",
+      href: "/cases/" + c.id + "/tasks",
+      classes: "govuk-button--secondary"
+    }) }}
+  </div>
+{% endblock %}

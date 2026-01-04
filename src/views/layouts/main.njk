@@ -1,0 +1,68 @@
+{# src/views/layouts/main.njk #}
+
+{% from "govuk/components/header/macro.njk" import govukHeader %}
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
+{% from "govuk/components/skip-link/macro.njk" import govukSkipLink %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+
+<!doctype html>
+<html lang="en" class="govuk-template govuk-template--rebranded">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title or "Case capture" }} - Case capture - GOV.UK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#1d70b8">
+
+    <link rel="stylesheet" href="/public/govuk/govuk-frontend.min.css">
+  </head>
+
+  <body class="govuk-template__body">
+    <script src="/public/govuk/govuk-frontend.min.js"></script>
+    <script>window.GOVUKFrontend && window.GOVUKFrontend.initAll()</script>
+
+    {{ govukSkipLink({ text: "Skip to main content", href: "#main-content" }) }}
+
+    {# GOV.UK header (rebranded template still uses this component) #}
+    {{ govukHeader({
+      classes: "govuk-header--full-width-border",
+      homepageUrl: "https://www.gov.uk"
+    }) }}
+
+    {# Service navigation (full-width bar, aligned content) #}
+    {{ govukServiceNavigation({
+      serviceName: "Case capture",
+      serviceUrl: "/",
+      navigation: [
+        { href: "/", text: "Cases", current: currentPath == "/" },
+        { href: "/cases/new", text: "Create case", current: currentPath == "/cases/new" }
+      ]
+    }) }}
+
+    {# Phase banner below navigation (as per your preference) #}
+    <div class="govuk-width-container">
+      {{ govukPhaseBanner({
+        tag: { text: "Alpha" },
+        html: 'This is an alpha prototype. <a class="govuk-link" href="/contact">Give feedback</a>.'
+      }) }}
+    </div>
+
+    <div class="govuk-width-container">
+      <main class="govuk-main-wrapper" id="main-content" role="main">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+
+    {{ govukFooter({
+      meta: {
+        items: [
+          { href: "/accessibility", text: "Accessibility statement" },
+          { href: "/cookies", text: "Cookies" },
+          { href: "/privacy", text: "Privacy" },
+          { href: "/contact", text: "Contact" }
+        ],
+        visuallyHiddenTitle: "Support links"
+      }
+    }) }}
+  </body>
+</html>

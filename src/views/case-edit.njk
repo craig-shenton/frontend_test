@@ -1,0 +1,50 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block content %}
+  {{ govukBackLink({ text: "Back", href: "/cases/" + c.id }) }}
+
+  {% include "partials/breadcrumbs-case.njk" %}
+
+  <h1 class="govuk-heading-l">Edit case</h1>
+
+  {% if error %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: [{ text: error, href: "#title" }]
+    }) }}
+  {% endif %}
+
+  {# Precompute the errorMessage object to avoid parse errors #}
+  {% set titleErrorMessage = null %}
+  {% if error %}
+    {% set titleErrorMessage = { text: error } %}
+  {% endif %}
+
+  <form method="post" action="/cases/{{ c.id }}/edit">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    {{ govukInput({
+      label: { text: "Title" },
+      id: "title",
+      name: "title",
+      value: c.title,
+      errorMessage: titleErrorMessage
+    }) }}
+
+    {{ govukTextarea({
+      label: { text: "Description" },
+      id: "description",
+      name: "description",
+      rows: 5,
+      value: c.description or ""
+    }) }}
+
+    {{ govukButton({ text: "Save changes" }) }}
+  </form>
+{% endblock %}

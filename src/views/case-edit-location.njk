@@ -1,0 +1,40 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  {{ govukBackLink({ text: "Back", href: "/cases/" + c.id + "/tasks" }) }}
+
+  {% include "partials/breadcrumbs-case.njk" %}
+
+  <h1 class="govuk-heading-l">Add location details</h1>
+
+  {% if errors and errors.length %}
+    {{ govukErrorSummary({ titleText: "There is a problem", errorList: errors }) }}
+  {% endif %}
+
+  <form method="post" action="/cases/{{ c.id }}/location">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    {{ govukInput({
+      label: { text: "Postcode" },
+      classes: "govuk-input--width-10",
+      id: "postcode",
+      name: "postcode",
+      value: c.postcode or ""
+    }) }}
+
+    {{ govukInput({
+      label: { text: "Organisation" },
+      hint: { text: "For example, a trust, lab, or local authority" },
+      id: "organisation",
+      name: "organisation",
+      value: c.organisation or ""
+    }) }}
+
+    {{ govukButton({ text: "Save and return to task list" }) }}
+  </form>
+{% endblock %}

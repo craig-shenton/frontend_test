@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: case_mvp_postgres
+    environment:
+      POSTGRES_DB: case_mvp
+      POSTGRES_USER: case_mvp
+      POSTGRES_PASSWORD: case_mvp_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - case_mvp_pgdata:/var/lib/postgresql/data
+
+volumes:
+  case_mvp_pgdata:

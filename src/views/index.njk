@@ -1,0 +1,60 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Cases</h1>
+      <p class="govuk-body">View, update and submit cases.</p>
+    </div>
+    <div class="govuk-grid-column-one-third" style="text-align:right;">
+      {{ govukButton({ text: "Create a case", href: "/cases/new" }) }}
+    </div>
+  </div>
+
+  {% if cases and cases.length %}
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th class="govuk-table__header">Title</th>
+          <th class="govuk-table__header">Status</th>
+          <th class="govuk-table__header">Last updated</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for c in cases %}
+          {% if c.state == "DRAFT" %}
+            {% set tagHtml = govukTag({ text: "Draft" }) %}
+          {% elif c.state == "IN_REVIEW" %}
+            {% set tagHtml = govukTag({ text: "In review" }) %}
+          {% elif c.state == "RETURNED" %}
+            {% set tagHtml = govukTag({ text: "Returned" }) %}
+          {% elif c.state == "APPROVED" %}
+            {% set tagHtml = govukTag({ text: "Approved" }) %}
+          {% else %}
+            {% set tagHtml = govukTag({ text: c.state }) %}
+          {% endif %}
+
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <a class="govuk-link" href="/cases/{{ c.id }}">{{ c.title }}</a>
+            </td>
+            <td class="govuk-table__cell">
+              {{ tagHtml | safe }}
+            </td>
+            <td class="govuk-table__cell">
+              {{ c.updated_at | formatDateTime }}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="govuk-body">No cases yet.</p>
+    <p class="govuk-body">
+      <a class="govuk-link" href="/cases/new">Create your first case</a>.
+    </p>
+  {% endif %}
+{% endblock %}

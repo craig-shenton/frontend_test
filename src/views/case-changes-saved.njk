@@ -1,0 +1,33 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  {{ govukPanel({
+    titleText: "Changes saved",
+    html: "Case reference<br><strong>" + c.id + "</strong>"
+  }) }}
+
+  {% if changedRows.length %}
+    <h2 class="govuk-heading-m">What you changed</h2>
+
+    {{ govukSummaryList({ rows: changedRows }) }}
+  {% else %}
+    <p class="govuk-body">No changes were detected.</p>
+  {% endif %}
+
+  <div class="govuk-button-group">
+    {{ govukButton({
+      text: "Return to task list",
+      href: "/cases/" + c.id + "/tasks"
+    }) }}
+
+    {{ govukButton({
+      text: "View case",
+      href: "/cases/" + c.id,
+      classes: "govuk-button--secondary"
+    }) }}
+  </div>
+{% endblock %}

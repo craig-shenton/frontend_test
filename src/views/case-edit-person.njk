@@ -1,0 +1,55 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  {{ govukBackLink({ text: "Back", href: "/cases/" + c.id + "/tasks" }) }}
+
+  {% include "partials/breadcrumbs-case.njk" %}
+
+  <h1 class="govuk-heading-l">Add person details</h1>
+
+  {% if errors and errors.length %}
+    {{ govukErrorSummary({ titleText: "There is a problem", errorList: errors }) }}
+  {% endif %}
+
+  <form method="post" action="/cases/{{ c.id }}/person">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    {{ govukInput({
+      label: { text: "Full name" },
+      id: "person_name",
+      name: "person_name",
+      value: c.person_name or ""
+    }) }}
+
+    {{ govukInput({
+      label: { text: "NHS number" },
+      hint: { text: "10 digits, for example 485 777 3456" },
+      classes: "govuk-input--width-20",
+      id: "nhs_number",
+      name: "nhs_number",
+      value: c.nhs_number or ""
+    }) }}
+
+    <div id="dob">
+      {{ govukDateInput({
+        id: "dob_date",
+        namePrefix: "dob",
+        fieldset: { legend: { text: "Date of birth", isPageHeading: false, classes: "govuk-fieldset__legend--m" } },
+        hint: { text: "For example, 27 3 2007" },
+        items: [
+          { name: "day", classes: "govuk-input--width-2", value: c.dob_day or "" },
+          { name: "month", classes: "govuk-input--width-2", value: c.dob_month or "" },
+          { name: "year", classes: "govuk-input--width-4", value: c.dob_year or "" }
+        ]
+      }) }}
+    </div>
+
+    {{ govukButton({ text: "Save and return to task list" }) }}
+  </form>
+{% endblock %}

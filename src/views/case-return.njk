@@ -1,0 +1,38 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% block content %}
+  {{ govukBackLink({ text: "Back", href: "/cases/" + c.id }) }}
+
+  {% include "partials/breadcrumbs-case.njk" %}
+
+  <h1 class="govuk-heading-l">Return case to drafter</h1>
+
+  {% if error %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: [{ text: error, href: "#comment" }]
+    }) }}
+  {% endif %}
+
+  <p class="govuk-body">Case: <strong>{{ c.title }}</strong></p>
+
+  <form method="post" action="/cases/{{ c.id }}/return">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    {{ govukTextarea({
+      label: { text: "Reason for return" },
+      id: "comment",
+      name: "comment",
+      rows: 5,
+      value: (form and form.comment) or "",
+      errorMessage: error ? { text: error } : null
+    }) }}
+
+    {{ govukButton({ text: "Return case" }) }}
+  </form>
+{% endblock %}

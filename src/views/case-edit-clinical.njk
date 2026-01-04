@@ -1,0 +1,38 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  {{ govukBackLink({ text: "Back", href: "/cases/" + c.id + "/tasks" }) }}
+
+  {% include "partials/breadcrumbs-case.njk" %}
+
+  <h1 class="govuk-heading-l">Add clinical details</h1>
+
+  {% if errors and errors.length %}
+    {{ govukErrorSummary({ titleText: "There is a problem", errorList: errors }) }}
+  {% endif %}
+
+  <form method="post" action="/cases/{{ c.id }}/clinical">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    <div id="symptoms_date">
+      {{ govukDateInput({
+        id: "symptoms_date_input",
+        namePrefix: "symptoms",
+        fieldset: { legend: { text: "Symptoms start date", isPageHeading: false, classes: "govuk-fieldset__legend--m" } },
+        hint: { text: "For example, 12 1 2026" },
+        items: [
+          { name: "day", classes: "govuk-input--width-2", value: c.symptoms_day or "" },
+          { name: "month", classes: "govuk-input--width-2", value: c.symptoms_month or "" },
+          { name: "year", classes: "govuk-input--width-4", value: c.symptoms_year or "" }
+        ]
+      }) }}
+    </div>
+
+    {{ govukButton({ text: "Save and return to task list" }) }}
+  </form>
+{% endblock %}

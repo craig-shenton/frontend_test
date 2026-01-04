@@ -1,0 +1,27 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  {{ govukBackLink({ text: "Back", href: "/cases/" + c.id }) }}
+
+  {% include "partials/breadcrumbs-case.njk" %}
+
+  <h1 class="govuk-heading-l">Continue case</h1>
+
+  {{ govukTaskList({ items: items, idPrefix: "case-" + c.id }) }}
+
+  {% if allComplete %}
+    {{ govukInsetText({
+      text: "All sections are complete. You can now check your answers before submitting."
+    }) }}
+
+    {{ govukButton({
+      text: "Check answers",
+      href: "/cases/" + c.id + "/check-answers"
+    }) }}
+  {% endif %}
+{% endblock %}
