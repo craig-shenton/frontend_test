@@ -232,7 +232,7 @@ app.post("/cases/new", async (req, res, next) => {
     }
 
     const c = await createCase({ title, description, createdBy: "local-user" });
-    return res.redirect(`/cases/${c.id}`);
+    return res.redirect(`/cases/${c.id}/tasks`);
   } catch (e) {
     return next(e);
   }
