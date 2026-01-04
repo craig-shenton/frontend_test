@@ -335,8 +335,8 @@ export async function transitionCase({ id, eventType, comment = null, actorId = 
 
     let toState = fromState;
     if (eventType === "SUBMIT_FOR_REVIEW") toState = "IN_REVIEW";
-    if (eventType === "RETURN") toState = "RETURNED";
-    if (eventType === "APPROVE") toState = "APPROVED";
+    if (eventType === "RETURN" || eventType === "REVIEW_RETURN") toState = "RETURNED";
+    if (eventType === "APPROVE" || eventType === "REVIEW_APPROVE") toState = "APPROVED";
 
     const updatedCase = await client.query(
       `UPDATE cases
