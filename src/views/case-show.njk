@@ -42,7 +42,7 @@
     {% elif c.state == "IN_REVIEW" %}
       {{ govukButton({
         text: "Review case",
-        href: "/cases/" + c.id + "/check-answers"
+        href: "/cases/" + c.id + "/review"
       }) }}
     {% endif %}
 
