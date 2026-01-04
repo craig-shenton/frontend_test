@@ -1,0 +1,30 @@
+{% extends "layouts/main.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+  {{ govukPanel({
+    titleText: "Case approved",
+    html: "The case has been approved.<br><strong>Reference: " + c.id + "</strong>"
+  }) }}
+
+  <h2 class="govuk-heading-m">What happens next</h2>
+
+  <p class="govuk-body">
+    The case is now marked as approved.
+  </p>
+
+  <div class="govuk-button-group">
+    {{ govukButton({
+      text: "View case",
+      href: "/cases/" + c.id
+    }) }}
+
+    {{ govukButton({
+      text: "Back to cases",
+      href: "/",
+      classes: "govuk-button--secondary"
+    }) }}
+  </div>
+{% endblock %}
