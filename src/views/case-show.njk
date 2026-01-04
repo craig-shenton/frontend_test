@@ -53,6 +53,16 @@
     }) }}
   </div>
 
+  {% set dobDisplay = "Not provided" %}
+  {% if c.dob_day and c.dob_month and c.dob_year %}
+    {% set dobDisplay = c | formatPersonDob %}
+  {% endif %}
+
+  {% set symptomsDisplay = "Not provided" %}
+  {% if c.symptoms_day and c.symptoms_month and c.symptoms_year %}
+    {% set symptomsDisplay = c | formatSymptomsDate %}
+  {% endif %}
+
 {# Summary list (acts like a “check answers” style view for the case hub) #}
 {{ govukSummaryList({
   rows: [
@@ -106,14 +116,14 @@
     },
     {
       key: { text: "Date of birth" },
-      value: { text: (c.dob_day and c.dob_month and c.dob_year) ? (c | formatPersonDob) : "Not provided" },
+      value: { text: dobDisplay },
       actions: {
         items: [{ href: "/cases/" + c.id + "/person", text: "Change", visuallyHiddenText: "date of birth" }]
       }
     },
     {
       key: { text: "Symptoms start date" },
-      value: { text: (c.symptoms_day and c.symptoms_month and c.symptoms_year) ? (c | formatSymptomsDate) : "Not provided" },
+      value: { text: symptomsDisplay },
       actions: {
         items: [{ href: "/cases/" + c.id + "/clinical", text: "Change", visuallyHiddenText: "symptoms start date" }]
       }

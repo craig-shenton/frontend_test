@@ -8,8 +8,15 @@
 
   <h1 class="govuk-heading-l">Check your answers before submitting</h1>
 
-  {% set dobDisplay = (c.dob_day and c.dob_month and c.dob_year) ? (c | formatPersonDob) : "Not provided" %}
-  {% set symptomsDisplay = (c.symptoms_day and c.symptoms_month and c.symptoms_year) ? (c | formatSymptomsDate) : "Not provided" %}
+  {% set dobDisplay = "Not provided" %}
+  {% if c.dob_day and c.dob_month and c.dob_year %}
+    {% set dobDisplay = c | formatPersonDob %}
+  {% endif %}
+
+  {% set symptomsDisplay = "Not provided" %}
+  {% if c.symptoms_day and c.symptoms_month and c.symptoms_year %}
+    {% set symptomsDisplay = c | formatSymptomsDate %}
+  {% endif %}
 
   <h2 class="govuk-heading-m">Person details</h2>
   {{ govukSummaryList({

@@ -24,13 +24,18 @@
   <form method="post" action="/cases/{{ c.id }}/return">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
+    {% set commentErrorMessage = null %}
+    {% if error %}
+      {% set commentErrorMessage = { text: error } %}
+    {% endif %}
+
     {{ govukTextarea({
       label: { text: "Reason for return" },
       id: "comment",
       name: "comment",
       rows: 5,
       value: (form and form.comment) or "",
-      errorMessage: error ? { text: error } : null
+      errorMessage: commentErrorMessage
     }) }}
 
     {{ govukButton({ text: "Return case" }) }}
