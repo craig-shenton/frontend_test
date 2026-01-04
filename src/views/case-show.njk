@@ -53,11 +53,9 @@
     }) }}
   </div>
 
-  <h2 class="govuk-heading-m">Case details</h2>
-
-  {# Summary list (acts like a “check answers” style view for the case hub) #}
-  {{ govukSummaryList({
-    rows: [
+{# Summary list (acts like a “check answers” style view for the case hub) #}
+{{ govukSummaryList({
+  rows: [
       {
         key: { text: "Title" },
         value: { text: c.title },
@@ -88,25 +86,74 @@
         key: { text: "Created" },
         value: { text: (c.created_at | formatDateTime) }
       },
-      {
-        key: { text: "Updated" },
-        value: { text: (c.updated_at | formatDateTime) }
+    {
+      key: { text: "Updated" },
+      value: { text: (c.updated_at | formatDateTime) }
+    },
+    {
+      key: { text: "Full name" },
+      value: { text: c.person_name or "Not provided" },
+      actions: {
+        items: [{ href: "/cases/" + c.id + "/person", text: "Change", visuallyHiddenText: "full name" }]
       }
-    ]
-  }) }}
+    },
+    {
+      key: { text: "NHS number" },
+      value: { text: c.nhs_number or "Not provided" },
+      actions: {
+        items: [{ href: "/cases/" + c.id + "/person", text: "Change", visuallyHiddenText: "NHS number" }]
+      }
+    },
+    {
+      key: { text: "Date of birth" },
+      value: { text: (c.dob_day and c.dob_month and c.dob_year) ? (c | formatPersonDob) : "Not provided" },
+      actions: {
+        items: [{ href: "/cases/" + c.id + "/person", text: "Change", visuallyHiddenText: "date of birth" }]
+      }
+    },
+    {
+      key: { text: "Symptoms start date" },
+      value: { text: (c.symptoms_day and c.symptoms_month and c.symptoms_year) ? (c | formatSymptomsDate) : "Not provided" },
+      actions: {
+        items: [{ href: "/cases/" + c.id + "/clinical", text: "Change", visuallyHiddenText: "symptoms start date" }]
+      }
+    },
+    {
+      key: { text: "Postcode" },
+      value: { text: c.postcode or "Not provided" },
+      actions: {
+        items: [{ href: "/cases/" + c.id + "/location", text: "Change", visuallyHiddenText: "postcode" }]
+      }
+    },
+    {
+      key: { text: "Organisation" },
+      value: { text: c.organisation or "Not provided" },
+      actions: {
+        items: [{ href: "/cases/" + c.id + "/location", text: "Change", visuallyHiddenText: "organisation" }]
+      }
+    }
+  ]
+}) }}
 
-  <h2 class="govuk-heading-m">Actions</h2>
+<h2 class="govuk-heading-m">Actions</h2>
 
   {% if c.state == "DRAFT" or c.state == "RETURNED" %}
     <p class="govuk-body">
       When you are ready, submit the case for review.
     </p>
 
-    {{ govukButton({
-      text: "Submit for review",
-      href: "/cases/" + c.id + "/submit",
-      classes: "govuk-button--secondary"
-    }) }}
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Continue case",
+        href: "/cases/" + c.id + "/tasks"
+      }) }}
+
+      {{ govukButton({
+        text: "Submit for review",
+        href: "/cases/" + c.id + "/submit",
+        classes: "govuk-button--secondary"
+      }) }}
+    </div>
   {% endif %}
 
   {% if c.state == "IN_REVIEW" %}
@@ -114,16 +161,31 @@
       You can approve the case or return it to the drafter with a reason.
     </p>
 
-    {{ govukButton({
-      text: "Approve",
-      href: "/cases/" + c.id + "/approve",
-      classes: "govuk-button--secondary"
-    }) }}
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Review case",
+        href: "/cases/" + c.id + "/review"
+      }) }}
+
+      {{ govukButton({
+        text: "Approve",
+        href: "/cases/" + c.id + "/approve",
+        classes: "govuk-button--secondary"
+      }) }}
+    </div>
 
     <p class="govuk-body">
       <a class="govuk-link" href="/cases/{{ c.id }}/return">Return to drafter</a>
     </p>
   {% endif %}
+
+  <div class="govuk-button-group">
+    {{ govukButton({
+      text: "View timeline",
+      href: "/cases/" + c.id + "/timeline",
+      classes: "govuk-button--secondary"
+    }) }}
+  </div>
 
   <p class="govuk-body">
     <a class="govuk-link" href="/">Back to cases</a>

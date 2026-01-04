@@ -332,14 +332,19 @@ app.get("/cases/:id/person", async (req, res, next) => {
   }
 });
 
+function readDateParts(req, prefix) {
+  const day = Number(req.body[`${prefix}_day`] ?? req.body[`${prefix}-day`] ?? 0) || null;
+  const month = Number(req.body[`${prefix}_month`] ?? req.body[`${prefix}-month`] ?? 0) || null;
+  const year = Number(req.body[`${prefix}_year`] ?? req.body[`${prefix}-year`] ?? 0) || null;
+  return { day, month, year };
+}
+
 app.post("/cases/:id/person", async (req, res, next) => {
   try {
     const personName = (req.body.person_name || "").trim();
     const nhsNumber = (req.body.nhs_number || "").trim();
 
-    const dobDay = Number(req.body.dob_day || 0) || null;
-    const dobMonth = Number(req.body.dob_month || 0) || null;
-    const dobYear = Number(req.body.dob_year || 0) || null;
+    const { day: dobDay, month: dobMonth, year: dobYear } = readDateParts(req, "dob");
 
     const errors = [];
     if (!personName) errors.push({ text: "Enter a name", href: "#person_name" });
@@ -394,9 +399,7 @@ app.get("/cases/:id/clinical", async (req, res, next) => {
 
 app.post("/cases/:id/clinical", async (req, res, next) => {
   try {
-    const symptomsDay = Number(req.body.symptoms_day || 0) || null;
-    const symptomsMonth = Number(req.body.symptoms_month || 0) || null;
-    const symptomsYear = Number(req.body.symptoms_year || 0) || null;
+    const { day: symptomsDay, month: symptomsMonth, year: symptomsYear } = readDateParts(req, "symptoms");
 
     const errors = [];
     if (!symptomsDay || !symptomsMonth || !symptomsYear) {

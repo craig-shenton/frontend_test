@@ -1,15 +1,15 @@
 {% extends "layouts/main.njk" %}
 
-{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
-  {{ govukBackLink({ text: "Back", href: "/cases/" + c.id + "/tasks" }) }}
-
   {% include "partials/breadcrumbs-case.njk" %}
 
   <h1 class="govuk-heading-l">Check your answers before submitting</h1>
+
+  {% set dobDisplay = (c.dob_day and c.dob_month and c.dob_year) ? (c | formatPersonDob) : "Not provided" %}
+  {% set symptomsDisplay = (c.symptoms_day and c.symptoms_month and c.symptoms_year) ? (c | formatSymptomsDate) : "Not provided" %}
 
   <h2 class="govuk-heading-m">Person details</h2>
   {{ govukSummaryList({
@@ -26,11 +26,7 @@
       },
       {
         key: { text: "Date of birth" },
-        value: {
-          text: (c.dob_day and c.dob_month and c.dob_year)
-            ? (c | formatPersonDob)
-            : "Not provided"
-        },
+        value: { text: dobDisplay },
         actions: { items: [{ href: "/cases/" + c.id + "/person", text: "Change", visuallyHiddenText: "date of birth" }] }
       }
     ]
@@ -41,11 +37,7 @@
     rows: [
       {
         key: { text: "Symptoms start date" },
-        value: {
-          text: (c.symptoms_day and c.symptoms_month and c.symptoms_year)
-            ? (c | formatSymptomsDate)
-            : "Not provided"
-        },
+        value: { text: symptomsDisplay },
         actions: { items: [{ href: "/cases/" + c.id + "/clinical", text: "Change", visuallyHiddenText: "symptoms start date" }] }
       }
     ]
@@ -82,4 +74,8 @@
       classes: "govuk-button--secondary"
     }) }}
   </div>
+
+  <p class="govuk-body">
+    <a class="govuk-link" href="/cases/{{ c.id }}/tasks">Back</a>
+  </p>
 {% endblock %}
